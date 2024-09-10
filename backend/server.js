@@ -1,23 +1,31 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
 const mongoose = require('mongoose');
-const config = require('./config');
-const userRoutes = require('./routes/userRoutes');
-const rideRoutes = require('./routes/rideRoutes');
+const cors = require('cors');
 
 const app = express();
+
+// Middleware
+app.use(express.json());
 app.use(cors());
-app.use(bodyParser.json());
 
-mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log('MongoDB connected'))
-    .catch(err => console.log(err));
+// Routes
+app.use('/api/users', require('./routes/userRoutes'));
+app.use('/api/rides', require('./routes/rideRoutes'));
 
-app.use('/api/users', userRoutes);
-app.use('/api/rides', rideRoutes);
+// MongoDB connection
+const connectDB = async () => {
+    try {
+        await mongoose.connect('mongodb://localhost:27017/moven');
+        console.log('MongoDB connected successfully');
+    } catch (err) {
+        console.error('MongoDB connection failed:', err);
+        process.exit(1);
+    }
+};
 
-const PORT = config.PORT || 5000;
+connectDB();
+
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server is running on port ${PORT}`);
 });
