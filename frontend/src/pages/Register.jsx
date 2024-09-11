@@ -1,5 +1,5 @@
 // Register.jsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import { Box, TextField, Button, FormControlLabel, Checkbox } from '@mui/material';
 
